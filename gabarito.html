@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Gabarito Oficial (500 Respostas) — Regras IBJJF</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div>
+        <h1 class="brand-title">Gabarito Oficial IBJJF <span class="brand-badge">500 Respostas</span></h1>
+        <p class="brand-sub">Página Separada de Respostas e Fundamentação (Artigos 1º ao 8º)</p>
+      </div>
+      <div style="display:flex; gap:0.5rem;">
+        <a href="index.html" class="tab-btn active" style="text-decoration:none; display:inline-flex; align-items:center;">← Voltar para a Prova</a>
+        <button class="tab-btn" onclick="window.print()">Imprimir Gabarito</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="filter-bar">
+      <input id="standalone-search" class="input-control" type="search" placeholder="Filtrar por número (#1 a #500) ou termo da regra..." oninput="renderStandalone()" />
+      <select id="standalone-cat" class="input-control" onchange="renderStandalone()">
+        <option value="">Todos os Artigos (1º ao 8º)</option>
+      </select>
+    </div>
+    <div id="standalone-list"></div>
+  </main>
+
+  <script src="database.js"></script>
+  <script>
+    const LETTERS = ['A', 'B', 'C', 'D'];
+    document.addEventListener('DOMContentLoaded', () => {
+      const sel = document.getElementById('standalone-cat');
+      [...new Set(BANCO_QUESTOES_IBJJF.map(q => q.categoria))].forEach(c => {
+        const o = document.createElement('option');
+        o.value = c;
+        o.textContent = c;
+        sel.appendChild(o);
+      });
+      renderStandalone();
+    });
+
+    function renderStandalone() {
+      const term = document.getElementById('standalone-search').value.toLowerCase();
+      const cat = document.getElementById('standalone-cat').value;
+      const filtered = BANCO_QUESTOES_IBJJF.filter(q => {
+        const okCat = !cat || q.categoria === cat;
+        const okTerm = !term || q.pergunta.toLowerCase().includes(term) || q.explicacao.toLowerCase().includes(term) || String(q.id) === term;
+        return okCat && okTerm;
+      });
+      document.getElementById('standalone-list').innerHTML = filtered.map(q => `
+        <div class="question-card" style="border-left:4px solid #16a34a;">
+          <div class="q-meta">
+            <span class="q-number" style="background:#f0fdf4; color:#15803d;">Resposta #${q.id}</span>
+            <span class="q-cat">${q.categoria}</span>
+          </div>
+          <p style="margin:0 0 0.4rem; font-size:0.86rem; color:#475569;">${q.pergunta}</p>
+          <p style="margin:0 0 0.5rem; font-size:0.95rem; font-weight:800; color:#15803d;">
+            Gabarito: ${LETTERS[q.correta]}) ${q.alternativas[q.correta]}
+          </p>
+          <div class="explanation-box">${q.explicacao}</div>
+        </div>
+      `).join('');
+    }
+  </script>
+</body>
+</html>

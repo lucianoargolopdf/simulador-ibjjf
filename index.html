@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Simulado Oficial IBJJF — Livro de Regras (500 Questões)</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div>
+        <h1 class="brand-title">
+          Simulado Regras IBJJF
+          <span class="brand-badge">500 Questões</span>
+        </h1>
+        <p class="brand-sub">Livro de Regras (Junho 2024) • Artigos 1º ao 8º (Págs. 4 a 38)</p>
+      </div>
+      <nav class="nav-tabs" aria-label="Navegação Principal">
+        <button class="tab-btn active" data-tab="prova" onclick="switchTab('prova')">1. Prova (20)</button>
+        <button class="tab-btn" data-tab="banco" onclick="switchTab('banco')">2. Banco (500 Perguntas)</button>
+        <button class="tab-btn" data-tab="gabarito" onclick="switchTab('gabarito')">3. Gabarito Oficial</button>
+        <button class="tab-btn" data-tab="resultados" onclick="switchTab('resultados')">4. Resultados & Erros</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Barra de Ações Desktop -->
+    <div class="desktop-actions">
+      <button class="btn btn-primary" onclick="submitExam()">Enviar Prova</button>
+      <button class="btn btn-secondary" onclick="createNewExam()">Criar Nova Prova</button>
+      <button class="btn btn-outline" onclick="switchTab('resultados')">Ver Resultados</button>
+      <a href="gabarito.html" target="_blank" class="btn btn-outline" style="margin-left:auto; text-decoration:none;">Abrir Gabarito em Página Separada ↗</a>
+    </div>
+
+    <!-- SEÇÃO 1: PROVA COM 20 QUESTÕES -->
+    <section id="sec-prova" class="tab-section">
+      <div class="progress-box">
+        <div class="progress-header">
+          <span id="progress-text">Respondidas: 0 de 20 (0%)</span>
+          <span>Simulado Aleatório</span>
+        </div>
+        <div class="progress-track">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+      </div>
+
+      <div id="exam-questions-container"></div>
+
+      <div style="display:flex; flex-wrap:wrap; gap:0.65rem; margin-top:1.25rem;" class="no-print">
+        <button class="btn btn-primary" style="flex:1;" onclick="submitExam()">Enviar Prova</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="createNewExam()">Criar Nova Prova</button>
+        <button class="btn btn-outline" style="flex:1;" onclick="switchTab('resultados')">Ver Resultados</button>
+      </div>
+    </section>
+
+    <!-- SEÇÃO 2: BANCO DE 500 PERGUNTAS (SEM RESPOSTAS EXPOSTAS) -->
+    <section id="sec-banco" class="tab-section hidden">
+      <div class="filter-bar">
+        <input id="bank-search" class="input-control" type="search" placeholder="Buscar no banco de 500 perguntas..." oninput="bankPage=1; renderQuestionBank()" />
+        <select id="bank-cat-filter" class="input-control" onchange="bankPage=1; renderQuestionBank()">
+          <option value="">Todos os Artigos (1º ao 8º)</option>
+        </select>
+        <a href="gabarito.html" class="btn btn-secondary" style="text-decoration:none; white-space:nowrap;">Ir para Página de Respostas</a>
+      </div>
+      <div id="bank-list"></div>
+      <div id="bank-pagination" style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem; margin-top:1rem;"></div>
+    </section>
+
+    <!-- SEÇÃO 3: GABARITO OFICIAL (SEPARADO DAS PERGUNTAS) -->
+    <section id="sec-gabarito" class="tab-section hidden">
+      <div class="filter-bar">
+        <input id="ans-search" class="input-control" type="search" placeholder="Buscar resposta por número (#1 a #500) ou palavra..." oninput="answerPage=1; renderAnswerKey()" />
+        <select id="ans-cat-filter" class="input-control" onchange="answerPage=1; renderAnswerKey()">
+          <option value="">Todos os Artigos (1º ao 8º)</option>
+        </select>
+        <a href="banco_de_dados.json" download class="btn btn-outline" style="text-decoration:none; white-space:nowrap;">Baixar Banco JSON</a>
+      </div>
+      <div id="answers-list"></div>
+      <div id="ans-pagination" style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem; margin-top:1rem;"></div>
+    </section>
+
+    <!-- SEÇÃO 4: RESULTADOS E ANÁLISE DE QUESTÕES ERRADAS -->
+    <section id="sec-resultados" class="tab-section hidden">
+      <div id="latest-stats" class="stats-grid"></div>
+
+      <h2 style="font-size:1.05rem; margin:1.25rem 0 0.75rem;">Análise Detalhada das Questões Erradas</h2>
+      <div id="wrong-questions-analysis"></div>
+
+      <div class="question-card" style="margin-top:1.25rem;">
+        <h3 style="font-size:0.95rem; margin:0 0 0.65rem;">Histórico Recente de Provas</h3>
+        <div id="history-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Barra de Ação Fixa Mobile -->
+  <div class="mobile-bottom-bar">
+    <button class="btn btn-primary" onclick="submitExam()">Enviar Prova</button>
+    <button class="btn btn-secondary" onclick="createNewExam()">Nova Prova</button>
+    <button class="btn btn-outline" onclick="switchTab('resultados')">Resultados</button>
+  </div>
+
+  <script src="database.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
